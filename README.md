@@ -1,6 +1,7 @@
 # conversor_moedas
 
-A new Flutter project.
+Aplicativo para estudos em Flutter com a finalidade de calcular a conversão de moedas utilizando uma API de dados financeiros (hgbrasil).
+
 
 ## Getting Started
 
