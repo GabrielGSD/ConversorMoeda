@@ -23,8 +23,50 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  final realController = TextEditingController();
+  final dollarController = TextEditingController();
+  final euroController = TextEditingController();
+
   double dollar;
   double euro;
+
+  void _realChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double real = double.parse(text);
+    dollarController.text = (real/dollar).toStringAsFixed(2);
+    euroController.text = (real/euro).toStringAsFixed(2);
+  }
+
+  void _dollarChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double dolar = double.parse(text);
+    realController.text = (dolar * this.dollar).toStringAsFixed(2);
+    euroController.text = (dolar * this.dollar / euro).toStringAsFixed(2);
+  }
+
+  void _euroChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double euro = double.parse(text);
+    realController.text = (euro * this.euro).toStringAsFixed(2);
+    dollarController.text = (euro * this.euro / dollar).toStringAsFixed(2);
+  }
+
+  void _clearAll(){
+    realController.text = "";
+    dollarController.text = "";
+    euroController.text = "";
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -75,85 +117,13 @@ class _HomeState extends State<Home> {
                             size: 150.0,
                             color: Colors.amber,
                           ),
-                          TextField(
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                labelText: "Reais",
-                                labelStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                                prefixText: "R\$ ",
-                                prefixStyle: TextStyle(
-                                    color: Colors.white, fontSize: 20.0)),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                            ),
-                          ),
+                          buildTextField("Reais", "R\$ ", realController, _realChanged),
                           Divider(),
                           //---------------------TextField para o Dollar----------------------------------------
-                          TextField(
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                labelText: "Dóllares",
-                                labelStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                                prefixText: "US\$ ",
-                                prefixStyle: TextStyle(
-                                    color: Colors.white, fontSize: 20.0)),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                            ),
-                          ),
+                          buildTextField("Dólares", "US\$ ", dollarController, _dollarChanged),
                           Divider(),
                           //---------------------TextField para o Euro----------------------------------------
-                          TextField(
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 1.0),
-                                ),
-                                labelText: "Euros",
-                                labelStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                                prefixText: "€ ",
-                                prefixStyle: TextStyle(
-                                    color: Colors.white, fontSize: 20.0)),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                            ),
-                          ),
+                          buildTextField("Euros", "€ ", euroController, _euroChanged),
                         ],
                       ),
                     );
@@ -163,4 +133,33 @@ class _HomeState extends State<Home> {
           ),
         ));
   }
+}
+//Função para criar o Widget de TextField e minimizar o código
+Widget buildTextField(String label, String prefix, TextEditingController cont, Function f) {
+  return TextField(
+    onChanged: f,
+    controller: cont,
+    decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(30.0),
+          borderSide: BorderSide(color: Colors.white, width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(30.0),
+          borderSide: BorderSide(color: Colors.white, width: 1.0),
+        ),
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+        ),
+        prefixText: prefix,
+        prefixStyle: TextStyle(color: Colors.white, fontSize: 20.0)),
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: 20.0,
+    ),
+    //Funcao para entrar só com numeros
+    keyboardType: TextInputType.number,
+  );
 }
